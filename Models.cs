@@ -1,27 +1,24 @@
 ﻿namespace ef_blog;
 using Microsoft.EntityFrameworkCore;
 
-
 public class User
 {
-    public int UserId { get; set; }
+    public int Userid { get; set; }
     public string? UserName { get; set; }
     public string? Password { get; set; }
 
     public int? PostId { get; set; }
 }
 
-
 public class Blog
 {
     public int BlogId { get; set; }
     public string Url { get; set; }
-    public string Title { get; set; }
+    public string Name { get; set; }
 
     public int PostId { get; set; }
 
 }
-
 
 public class Post
 {
@@ -38,6 +35,7 @@ public class Post
 public class BloggingContext : DbContext
 {
 
+    public DbSet<User> Users { get; set; } //skapar tables 
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<Post> Posts { get; set; }
 
@@ -51,4 +49,3 @@ public class BloggingContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options) =>
         options.UseSqlite($"Data Source={DbPath}");
 }
-   
