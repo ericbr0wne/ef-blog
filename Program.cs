@@ -1,24 +1,81 @@
 ﻿using ef_blog;
+using System;
+using System.Runtime.ExceptionServices;
 
 
 using BloggingContext? db = new();
 
 Console.WriteLine($"SQLite DB located at: {db.DbPath}");
 
-db.Add(new Blog { Url = "First Blog" });
-db.Add(new Blog { Url = "Second Blog" });
-
 db.SaveChanges();
 
-string list = File.ReadAllText("User.csv");
+string[] userCSV = File.ReadAllLines("../../../User.csv");
+string[] BlogCSV = File.ReadAllLines("../../../Blog.csv");
+string[] PostCSV = File.ReadAllLines("../../../Post.csv");
+
+
+//köra en array istället?
+//int[] UserId = new int[];
+var UserId = new List<int>();
+List<string> userName = new List<string>();
+List<string> password = new List<string>();
+List<int> PostId = new List<int>();
+
+for (int i = 0; i < userCSV.Length; i++)
+{
+    string[] userLines = userCSV[i].Split(',');
+
+    int.TryParse(userLines[0], out int id);
+    UserId.Add(id);
+ 
+    userName.Add(userLines[1]);
+    password.Add(userLines[2]);
+
+    int.TryParse(userLines[3], out int fk);
+    PostId.Add(fk);
+
+}
+
+foreach (int id in UserId)
+{ 
+    db.Add(new User { UserId = id });
+}
+    db.SaveChanges();
+
+/*
+
+Console.WriteLine("UserNames: ");
+for (int i = 0;i < userName.Count; i++)
+{
+    Console.WriteLine(userName[i]);
+}
+
+
+List<string> list2 = new List<string>();    
+
+ICollection<string> users = (ICollection<string>)list2;
+
+
+foreach (string line in users)
+{
+
+}
 
 try
 {
-	int.TryParse(list, out int sd);
+	int.TryParse(list2, out int sd);
 
-	Add.
 
-foreach (string line in sd)
+
+            List<Person> persons = new List<Person>();
+    persons.Add(new Person("John", 30));
+    persons.Add(new Person("Jack", 27));
+
+    ICollection<Person> personCollection = persons;
+    IEnumerable<Person> personEnumeration = persons;
+
+
+    foreach (string line in sd)
 {
 
 }
