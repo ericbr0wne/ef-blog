@@ -1,22 +1,21 @@
-﻿using ef_blog;
-using System;
-using System.Runtime.ExceptionServices;
+﻿using ef_blog.Models;
+using ef_blog.Data;
 
-
-using BloggingContext? db = new();
+using BloggingContext? db = new BloggingContext();
 
 Console.WriteLine($"SQLite DB located at: {db.DbPath}");
 
 db.SaveChanges();
 
-string[] userCSV = File.ReadAllLines("../../../User.csv");
-string[] BlogCSV = File.ReadAllLines("../../../Blog.csv");
-string[] PostCSV = File.ReadAllLines("../../../Post.csv");
+
+string[] userCSV = File.ReadAllLines("../../../CSV/User.csv");
+string[] BlogCSV = File.ReadAllLines("../../../CSV/Blog.csv");
+string[] PostCSV = File.ReadAllLines("../../../CSV/Post.csv");
 
 
 //köra en array istället?
 //int[] UserId = new int[];
-var UserId = new List<int>();
+List<int> UserId = new List<int>();
 List<string> userName = new List<string>();
 List<string> password = new List<string>();
 List<int> PostId = new List<int>();
@@ -38,9 +37,11 @@ for (int i = 0; i < userCSV.Length; i++)
 
 foreach (int id in UserId)
 { 
-    db.Add(new User { UserId = id });
+
+    //db.Add(id);
+    db.AddRange(id);
 }
-    db.SaveChanges();
+db.SaveChanges();
 
 /*
 
