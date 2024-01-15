@@ -1,5 +1,8 @@
 ﻿using ef_blog.Models;
 using ef_blog.Data;
+using System.Runtime.ExceptionServices;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Reflection.Metadata;
 
 using BloggingContext? db = new BloggingContext();
 
@@ -7,39 +10,67 @@ Console.WriteLine($"SQLite DB located at: {db.DbPath}");
 
 db.SaveChanges();
 
+string[] userCSV = File.ReadAllLines("User.csv");
+string[] BlogCSV = File.ReadAllLines("Blog.csv");
+string[] PostCSV = File.ReadAllLines("Post.csv");
 
-string[] userCSV = File.ReadAllLines("../../../CSV/User.csv");
-string[] BlogCSV = File.ReadAllLines("../../../CSV/Blog.csv");
-string[] PostCSV = File.ReadAllLines("../../../CSV/Post.csv");
-
-
-//köra en array istället?
-//int[] UserId = new int[];
-List<int> UserId = new List<int>();
-List<string> userName = new List<string>();
-List<string> password = new List<string>();
-List<int> PostId = new List<int>();
 
 for (int i = 0; i < userCSV.Length; i++)
 {
-    string[] userLines = userCSV[i].Split(',');
+    string[] userSplit = userCSV[i].Split(',');
 
-    int.TryParse(userLines[0], out int id);
-    UserId.Add(id);
- 
-    userName.Add(userLines[1]);
-    password.Add(userLines[2]);
-
-    int.TryParse(userLines[3], out int fk);
-    PostId.Add(fk);
+    db.Add(new User { UserName = userSplit[1], Password = userSplit[2] });
 
 }
+for (int i = 0; i < BlogCSV.Length; i++)
+{
+    string[] blogSplit = BlogCSV[i].Split(',');
+
+    db.Add(new Blog { Url = blogSplit[1], Name = blogSplit[2] });
+
+}
+
+
+for (int i = 0; i < PostCSV.Length; i++)
+{
+    string[] postSplit = PostCSV[i].Split(",");
+
+    DateOnly.TryParse(postSplit[3], out DateOnly date);
+    int.TryParse(postSplit[4], out int blogID_fk);
+    int.TryParse(postSplit[5], out int userId_fk);
+
+    db.Add(new Post { Title = postSplit[1], Content = postSplit[2], Published_On = date, BlogId = blogID_fk, UserId = userId_fk });
+}
+
+db.SaveChanges();
+
+
+
+
+
+//Console.WriteLine("Delete the blog"); db.Remove(); db.SaveChanges();
+
+
+
+
+
+
+/*
+User user = new User();
+{
+    foreach (int id in UserId)
+    {
+        Console.WriteLine(id);
+    }
+}
+db.Users.Add(user);
+db.SaveChanges();
 
 foreach (int id in UserId)
 { 
 
     //db.Add(id);
-    db.AddRange(id);
+    db.Users.Add(user);
 }
 db.SaveChanges();
 

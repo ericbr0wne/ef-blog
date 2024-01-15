@@ -13,9 +13,11 @@ namespace ef_blog.Models
     {
         [Key]
         public int UserId { get; set; }
-        public string? UserName { get; set; } = null;
+        public string? UserName { get; set; }
         public string? Password { get; set; }
 
-        public int? PostId { get; set; } 
+        //public Post? Post;    
+        //public int PostId;
+
     }
 }

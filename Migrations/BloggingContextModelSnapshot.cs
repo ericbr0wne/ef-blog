@@ -26,9 +26,6 @@ namespace ef_blog.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
@@ -49,7 +46,7 @@ namespace ef_blog.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Published_On")
+                    b.Property<DateOnly>("Published_On")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -59,6 +56,10 @@ namespace ef_blog.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("PostID");
+
+                    b.HasIndex("BlogId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
@@ -72,15 +73,31 @@ namespace ef_blog.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PostId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ef_blog.Models.Post", b =>
+                {
+                    b.HasOne("ef_blog.Models.Blog", "Blog")
+                        .WithMany()
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ef_blog.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

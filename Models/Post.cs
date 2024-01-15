@@ -13,9 +13,13 @@ namespace ef_blog.Models
         public int PostID { get; set; }
         public string? Title { get; set; }
         public string? Content { get; set; }
-        public string? Published_On { get; set; }
+        public DateOnly Published_On { get; set; }
 
+        public Blog? Blog {  get; set; }  
         public int BlogId { get; set; }
+
+        public User? User {  get; set; }
         public int UserId { get; set; }
+        
     }
 }
