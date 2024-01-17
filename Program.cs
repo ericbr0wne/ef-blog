@@ -3,6 +3,11 @@ using ef_blog.Data;
 using System.Runtime.ExceptionServices;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection.Metadata;
+using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
+using System;
+using static System.Reflection.Metadata.BlobBuilder;
+using Microsoft.EntityFrameworkCore.Storage;
 
 using BloggingContext? db = new BloggingContext();
 
@@ -10,131 +15,85 @@ Console.WriteLine($"SQLite DB located at: {db.DbPath}");
 
 db.SaveChanges();
 
-string[] userCSV = File.ReadAllLines("User.csv");
+string[] UserCSV = File.ReadAllLines("User.csv");
 string[] BlogCSV = File.ReadAllLines("Blog.csv");
 string[] PostCSV = File.ReadAllLines("Post.csv");
 
-
-for (int i = 0; i < userCSV.Length; i++)
+foreach (var line in UserCSV)
 {
-    string[] userSplit = userCSV[i].Split(',');
-
-    db.Add(new User { UserName = userSplit[1], Password = userSplit[2] });
-
-}
-for (int i = 0; i < BlogCSV.Length; i++)
-{
-    string[] blogSplit = BlogCSV[i].Split(',');
-
-    db.Add(new Blog { Url = blogSplit[1], Name = blogSplit[2] });
-
-}
-
-
-for (int i = 0; i < PostCSV.Length; i++)
-{
-    string[] postSplit = PostCSV[i].Split(",");
-
-    DateOnly.TryParse(postSplit[3], out DateOnly date);
-    int.TryParse(postSplit[4], out int blogID_fk);
-    int.TryParse(postSplit[5], out int userId_fk);
-
-    db.Add(new Post { Title = postSplit[1], Content = postSplit[2], Published_On = date, BlogId = blogID_fk, UserId = userId_fk });
-}
-
-db.SaveChanges();
-
-
-
-
-
-//Console.WriteLine("Delete the blog"); db.Remove(); db.SaveChanges();
-
-
-
-
-
-
-/*
-User user = new User();
-{
-    foreach (int id in UserId)
+    var splitUser = line.Split(',');
+    var userId = int.Parse(splitUser[0]);
+    User? user = db.Users?.Find(userId);
+    if (user != null) 
     {
-        Console.WriteLine(id);
+        continue;
     }
+
+    db.Users?.Add(new User
+    {
+        UserId = userId,
+        UserName = splitUser[1],
+        Password = splitUser[2]
+    });
 }
-db.Users.Add(user);
 db.SaveChanges();
 
-foreach (int id in UserId)
+
+foreach (var line in BlogCSV)
+{
+    var splitBlog = line.Split(',');
+    var blogId = int.Parse(splitBlog[0]);
+    Blog? blog = db.Blogs?.Find(blogId);
+    if (blog != null)
+    {
+        continue;
+    }
+
+    db.Blogs?.Add(new Blog
+    {
+        BlogId = blogId,
+        Url = splitBlog[1],
+        Name = splitBlog[2]
+    });
+}
+    db.SaveChanges();
+
+
+foreach (var line in PostCSV)
 { 
-
-    //db.Add(id);
-    db.Users.Add(user);
+    var splitPost = line.Split(",");
+    var postId = int.Parse(splitPost[0]);
+    DateOnly.TryParse(splitPost[3], out DateOnly date);
+    int.TryParse(splitPost[4], out int blogID_fk);
+    int.TryParse(splitPost[5], out int userId_fk);
+    Post? post = db.Posts?.Find(postId);
+    if (post != null)
+    {
+        continue;
+    }
+    db.Add(new Post { 
+        Title = splitPost[1], 
+        Content = splitPost[2], 
+        Published_On = date, 
+        BlogId = blogID_fk, 
+        UserId = userId_fk });
 }
 db.SaveChanges();
 
-/*
+var blogs = db.Blogs
+     .Include(p => p.Posts)
+     .ThenInclude(u => u.User)
+     .ToList();
 
-Console.WriteLine("UserNames: ");
-for (int i = 0;i < userName.Count; i++)
+foreach (var line in blogs)
 {
-    Console.WriteLine(userName[i]);
+    Console.WriteLine($"Blog: {line.Name}");
+
+    foreach (var line2 in line.Posts)
+    {
+        Console.WriteLine($"   Post: {line2.Title}, {line2.Content}, {line2.Published_On}");
+        Console.WriteLine($"      User: {line2.User.UserName}");
+    }
+        Console.WriteLine();
 }
 
-
-List<string> list2 = new List<string>();    
-
-ICollection<string> users = (ICollection<string>)list2;
-
-
-foreach (string line in users)
-{
-
-}
-
-try
-{
-	int.TryParse(list2, out int sd);
-
-
-
-            List<Person> persons = new List<Person>();
-    persons.Add(new Person("John", 30));
-    persons.Add(new Person("Jack", 27));
-
-    ICollection<Person> personCollection = persons;
-    IEnumerable<Person> personEnumeration = persons;
-
-
-    foreach (string line in sd)
-{
-
-}
-
-
-}
-catch (Exception)
-{
-
-	throw;
-}
-//filhantering
-//göra om csv filer
-//try parse
-
-
-
-
-/*
- * // Create
-Console.WriteLine("Inserting a new blog");
-db.Add(new Blog { Url = "http://blogs.msdn.com/adonet" });
-db.SaveChanges();
-
-// Read
-Console.WriteLine("Querying for a blog");
-var blog = db.Blogs
-.OrderBy(b => b.BlogId)
-.First();
- */

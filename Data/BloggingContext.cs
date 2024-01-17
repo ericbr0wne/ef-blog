@@ -10,7 +10,6 @@ namespace ef_blog.Data
 {
     public class BloggingContext : DbContext
     {
-
         public DbSet<User> Users { get; set; }  
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -19,10 +18,13 @@ namespace ef_blog.Data
 
         public BloggingContext()
         {
+
             string folder = Environment.CurrentDirectory;
             DbPath = System.IO.Path.Join(folder, "EricBrowne.db");
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options) =>
             options.UseSqlite($"Data Source={DbPath}");
+
     }
 }

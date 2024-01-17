@@ -36,7 +36,7 @@ namespace ef_blog.Migrations
 
             modelBuilder.Entity("ef_blog.Models.Post", b =>
                 {
-                    b.Property<int>("PostID")
+                    b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -55,7 +55,7 @@ namespace ef_blog.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("PostID");
+                    b.HasKey("PostId");
 
                     b.HasIndex("BlogId");
 
@@ -84,13 +84,13 @@ namespace ef_blog.Migrations
             modelBuilder.Entity("ef_blog.Models.Post", b =>
                 {
                     b.HasOne("ef_blog.Models.Blog", "Blog")
-                        .WithMany()
+                        .WithMany("Posts")
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ef_blog.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -98,6 +98,16 @@ namespace ef_blog.Migrations
                     b.Navigation("Blog");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ef_blog.Models.Blog", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("ef_blog.Models.User", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }
