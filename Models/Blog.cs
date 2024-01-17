@@ -15,6 +15,7 @@ namespace ef_blog.Models
         public string? Url { get; set; }
         public string? Name { get; set; }
 
+        
         public List<Post> Posts { get; } = new();
     }
 }
