@@ -80,10 +80,14 @@ foreach (var line in PostCSV)
 }
 db.SaveChanges();
 
+/*
 var blogs = db.Blogs
      .Include(p => p.Posts)
      .ThenInclude(u => u.User)
      .ToList();
+*/
+
+var blogs = db.Blogs;
 
 foreach (var line in blogs)
 {
